@@ -2,32 +2,33 @@
   bind:this={element}
   use:useActions={use}
   use:forwardEvents
-  class="mdc-checkbox {className}"
-  class:mdc-checkbox--disabled={disabled}
-  {...exclude($$props, ['use', 'class', 'disabled', 'indeterminate', 'group', 'checked', 'value', 'inputProps'])}
+  class="mdc-switch {className}"
+  class:mdc-switch--disabled={disabled}
+  class:mdc-switch--checked={nativeChecked}
+  {...exclude($$props, ['use', 'class', 'disabled', 'group', 'checked', 'value', 'inputProps'])}
 >
-  <input
-    use:useActions={inputProps.use}
-    class="mdc-checkbox__native-control {inputProps.class}"
-    type="checkbox"
-    {id}
-    {disabled}
-    bind:checked={nativeChecked}
-    {value}
-    on:change={handleChange}
-    on:change on:input
-    {...exclude(inputProps, ['use', 'class'])}
-  />
-  <div class="mdc-checkbox__background">
-    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-      <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-    </svg>
-    <div class="mdc-checkbox__mixedmark"></div>
+  <div class="mdc-switch__track"></div>
+  <div class="mdc-switch__thumb-underlay">
+    <div class="mdc-switch__thumb">
+      <input
+        use:useActions={inputProps.use}
+        class="mdc-switch__native-control {inputProps.class}"
+        type="checkbox"
+        role="switch"
+        {id}
+        {disabled}
+        bind:checked={nativeChecked}
+        {value}
+        on:change={handleChange}
+        on:change on:input
+        {...exclude(inputProps, ['use', 'class'])}
+      />
+    </div>
   </div>
 </div>
 
 <script>
-  import {MDCCheckbox} from '@material/checkbox';
+  import {MDCSwitch} from '@material/switch';
   import {onMount, onDestroy, getContext} from 'svelte';
   import {current_component} from 'svelte/internal';
   import {forwardEventsBuilder} from '../forwardEvents';
@@ -41,7 +42,6 @@
   let className = '';
   export {className as class};
   export let disabled = false;
-  export let indeterminate = false;
   export let group = uninitializedValue;
   export let checked = uninitializedValue;
   export let value = null;
@@ -51,7 +51,7 @@
   };
 
   let element;
-  let checkbox;
+  let switchControl;
   let formField = getContext('SMUI:formField');
   let id = getContext('SMUI:formField:id');
   let setChecked = getContext('SMUI:formField:setChecked');
@@ -61,27 +61,23 @@
     setChecked(nativeChecked);
   }
 
-  $: if (checkbox) {
+  $: if (switchControl) {
     if (group !== uninitializedValue) {
       const isChecked = group.indexOf(value) !== -1;
-      if (checkbox.checked !== isChecked) {
-        checkbox.checked = isChecked;
+      if (switchControl.checked !== isChecked) {
+        switchControl.checked = isChecked;
       }
-    } else if (checkbox.checked !== checked) {
-      checkbox.checked = checked;
+    } else if (switchControl.checked !== checked) {
+      switchControl.checked = checked;
     }
   }
 
-  $: if (checkbox && checkbox.indeterminate !== indeterminate) {
-    checkbox.indeterminate = indeterminate;
+  $: if (switchControl && switchControl.disabled !== disabled) {
+    switchControl.disabled = disabled;
   }
 
-  $: if (checkbox && checkbox.disabled !== disabled) {
-    checkbox.disabled = disabled;
-  }
-
-  $: if (checkbox && checkbox.value !== value) {
-    checkbox.value = value;
+  $: if (switchControl && switchControl.value !== value) {
+    switchControl.value = value;
   }
 
   let oldChecked = checked;
@@ -95,15 +91,15 @@
   }
 
   onMount(() => {
-    checkbox = new MDCCheckbox(element);
+    switchControl = new MDCSwitch(element);
 
     if (formField && formField()) {
-      formField().input = radio;
+      formField().input = switchControl;
     }
   });
 
   onDestroy(() => {
-    checkbox.destroy();
+    switchControl.destroy();
   });
 
   function handleChange(e) {
@@ -125,5 +121,5 @@
 </script>
 
 <style lang="scss" global>
-  @import "@material/checkbox/mdc-checkbox";
+  @import "@material/switch/mdc-switch";
 </style>

@@ -5,7 +5,7 @@
   <div use:Content>
     <List>
       {#each sections as section}
-        <Item href={'key' in section ? '#' : undefined} on:click={() => 'key' in section && pickSection(section)} activated={'key' in section && key === section.key} style="margin-left: {section.indent * 15}px;">
+        <Item href={'key' in section ? '#' : undefined} on:click={() => 'key' in section && pickSection(section)} activated={'key' in section && key === section.key} style="{section.indent ? 'margin-left: '+(section.indent * 18)+'px;' : ''}">
           <span use:Text>{section.name}</span>
         </Item>
       {/each}
@@ -32,9 +32,12 @@
   import DemoDrawer from './DemoDrawer';
   import DemoCheckbox from './DemoCheckbox';
   import DemoRadio from './DemoRadio';
+  import DemoSwitch from './DemoSwitch';
+  import DemoLinearProgress from './DemoLinearProgress';
   import DemoList from './DemoList';
   import DemoMenuSurface from './DemoMenuSurface';
   import DemoMenu from './DemoMenu';
+  import DemoTypography from './DemoTypography';
 
   let key = 'button';
   let component = DemoButton;
@@ -100,6 +103,18 @@
       indent: 1
     },
     {
+      name: 'Switches',
+      key: 'switch',
+      component: DemoSwitch,
+      indent: 1
+    },
+    {
+      name: 'Linear Progress',
+      key: 'linear-progress',
+      component: DemoLinearProgress,
+      indent: 0
+    },
+    {
       name: 'Lists',
       key: 'list',
       component: DemoList,
@@ -115,6 +130,12 @@
       name: 'Menus',
       key: 'menu',
       component: DemoMenu,
+      indent: 0
+    },
+    {
+      name: 'Typography',
+      key: 'typography',
+      component: DemoTypography,
       indent: 0
     }
   ];
@@ -182,8 +203,24 @@
     @include mdc-typography('headline6');
   }
 
-  :global(html, body, p) {
+  :global(*) {
     @include mdc-typography('body1');
+  }
+
+  :global(code, pre) {
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  :global(small) {
+    font-size: .9em;
+  }
+
+  :global(big) {
+    font-size: 1.1em;
+  }
+
+  :global(b, strong) {
+    font-weight: bold;
   }
 
   :global(caption) {
